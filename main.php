@@ -1,6 +1,6 @@
 <?php
 
-include 'config.php';
+include 'src/config.php';
 
 $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
 
@@ -8,7 +8,7 @@ $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
         die("POłączenie nieudane, błąd".$conn->connect_error);
     }
     else{
-        echo 'połaczenie działa';
+        $conn->set_charset("utf8");
     }
     // alt+ insert -> getery + setery ;
     /*
@@ -23,7 +23,6 @@ $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
      */
      /*
       * 3 pliki: klasa user, main, config.php + klasa tweet, 
-      *  ignore net beans do gita; oddzielny plik;
       */
     
     
