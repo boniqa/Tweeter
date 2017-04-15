@@ -144,7 +144,7 @@ class Tweet
 
     static public function loadAllTweets(mysqli $conn)
     {
-        $sql = "SELECT * FROM Tweets";
+        $sql = "SELECT * FROM Tweets ORDER BY creation_date DESC";
         $ret = [];
 
         $result = $conn->query($sql);

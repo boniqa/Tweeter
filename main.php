@@ -6,7 +6,7 @@ include 'src/Tweet.php';
 include 'connection.php';
 
 
-    $twee= new Tweet();
+
    
     //var_dump($twee->loadAllTweets($conn));
     
@@ -76,36 +76,75 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
 </head>
 <body>
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
     <div class="jumbotron">
     
         <h1 style="margin-left: 100px">Tweeter</h1>
+        <p><a style="margin-left: 100px" class="btn btn-lg btn-success" href="NewUser.php" role="button">Sign up today</a></p>
+
+    </div>
+     <div class="page-header">
+        <h2 style="margin-left: 100px">Add Tweet:</h2>
     </div>
     <div class="page-header">
+        <h2 style="margin-left: 100px">Latest Tweets:</h2>
+    </div>
+    
+    
+    <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>What?</th>
+                <th>Who?</th>
+                <th>When?</th>
+                <th>Comments</th>
 
-    <h2 style="margin-left: 100px">Menu</h2>
-    </div>
-    
-      <div class="row">
-    
-    <div class="col-xs-3">
-        <a href="movies.php"><button class="btn btn-block btn-default"><i class="fa fa-film" aria-hidden="true"></i>
-                #1</button></a>
-    </div>
-    <div class="col-xs-3">
-      <a href="cinemas.php"><button class="btn btn-block btn-default"><i class="fa fa-home" aria-hidden="true"></i>
-              #2</button></a>
-    </div>
-    <div class="col-xs-3">
-        <a href="delete_add.php"><button class="btn btn-block btn-danger"><i class="fa fa-trash"></i> #3</button></a>
-    </div>
-    <div class="col-xs-3">
-      <a href="payment.php"><button class="btn btn-block btn-default"><i class="fa fa-credit-card" aria-hidden="true"></i>
-              #4 </button></a>
-    </div>
-    
-  </div>
-    
+              </tr>
+            </thead>
+            <tbody>
+                <?php
+                $twee= new Tweet();
+                
+                $result= $twee->loadAllTweets($conn);
+                
+                foreach ($result as $row){
+                    echo "<tr>
+                <td>".$row->getId()."</td>
+                <td>".$row->getText(). "</td>
+                <td>".$row->getUserId()."</td>
+                <td>".$row->getCreationDate()."</td>
+                <td>No komments now</td>
 
+                </tr>"
+                ;}
+                ?>
+            </tbody>
+          </table>
+    
     
 </body>
 </html>
