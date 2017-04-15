@@ -2,6 +2,8 @@
 
 include 'src/config.php';
 include 'src/User.php';
+include 'src/Tweet.php';
+
 
 $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
 
@@ -17,12 +19,20 @@ $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
  
 
 
-    
+    $twee= new Tweet();
+   
+    var_dump($twee->loadAllTweets($conn));
     
     
     
     // alt+ insert -> getery + setery ;
     /*
+     *  $twee->setUserId(1);
+    $twee->setText("brzydka pogoda");
+    $twee->setCreationDate(date("m.d.y"));
+    var_dump($twee);
+    var_dump($twee->saveToDb($conn));
+     * 
      Create table Users (
      id int NOT NULL AUTO_INCREMENT,
      email varchar(255) NOT NULL UNIQUE,
@@ -43,10 +53,13 @@ $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
         user_id int NOT NULL,
         text varchar(160) NOT NULL,
         creation_date DATETIME NOT NULL,
-        comment_id int NOT NULL,
         PRIMARY KEY(id)  ,
         foreign key (user_id)
         REFERENCES Users(id) ON DELETE CASCADE
      );
+     * 
+     * 
+     INSERT INTO Tweets(user_Id, text, creationDate)
+          VALUES('{$this->user_id}', '{$this->text}', '{$this->creation_date}');
      */
     
