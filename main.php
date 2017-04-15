@@ -1,6 +1,7 @@
 <?php
 
 include 'src/config.php';
+include 'src/User.php';
 
 $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
 
@@ -10,6 +11,16 @@ $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
     else{
         $conn->set_charset("utf8");
     }
+    
+    
+    
+ 
+
+
+    
+    
+    
+    
     // alt+ insert -> getery + setery ;
     /*
      Create table Users (
@@ -27,14 +38,15 @@ $conn= new mysqli($DB_HOST, $DB_USER, $DB_PASSWORD, $DB_DBNAME);
     
     
     /*
-     * Create table tweets (
+      Create table Tweets (
         id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
         text varchar(160) NOT NULL,
         creation_date DATETIME NOT NULL,
+        comment_id int NOT NULL,
         PRIMARY KEY(id)  ,
-     * foreign key (user_id)
-     * REFERENCES Users(id) ON DELETE CASCADE
+        foreign key (user_id)
+        REFERENCES Users(id) ON DELETE CASCADE
      );
      */
     
