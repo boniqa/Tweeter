@@ -1,20 +1,38 @@
 <?php
-
+session_start();
 include 'src/config.php';
 include 'src/User.php';
 include 'src/Tweet.php';
 include 'connection.php';
 
 
-
+if(!isset($_SESSION['loggedUserId'])) {
+	header("Location: login.php");
+}
    
-    //var_dump($twee->loadAllTweets($conn));
+//var_dump($_SESSION);
+//var_dump($twee->loadAllTweets($conn));
+   
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if(isset($_POST['tweet'])){
+        
+      $tweet_text = ($_POST['tweet']);
+      $user_id= $_SESSION['loggedUserId'] ;
+      
+      $new_tweet= new Tweet();
+                
+        $new_tweet->setText($tweet_text);
+        $new_tweet->setUserId($user_id);
+        $new_tweet->setCreationDate(date("Y-m-d H:i:s"));
+        $new_tweet->saveToDb($conn);
+        
+        echo"new tweet is set!";              
+             
+      //var_dump($user_id);
+      //var_dump($tweet_text);
+    }
     
-       
-
-    
-    
-    
+}
     // alt+ insert -> getery + setery ;
     /*
      *  $twee->setUserId(1);
@@ -76,28 +94,20 @@ crossorigin="anonymous"></script>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
 </head>
 <body>
-      <nav class="navbar navbar-inverse navbar-fixed-top">
+      
+    
+      <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          
-        </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-        </div><!--/.navbar-collapse -->
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>                
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar/">My profile</a></li>
+            <li><a href="login.php">Sign in</a></li>
+            <li><a href="logout.php">Sign out</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
     </nav>
     <div class="jumbotron">
@@ -109,6 +119,14 @@ crossorigin="anonymous"></script>
      <div class="page-header">
         <h2 style="margin-left: 100px">Add Tweet:</h2>
     </div>
+    
+    <div class="input-group">
+        <form method="POST" action="#">
+        <input type="text" maxlength="120"  name ="tweet" class="form-control" placeholder="Your Tweet" aria-describedby="sizing-addon2">
+        <input type="submit" name="tweet_text" value="Add!"/>
+        </form>
+    </div>
+    
     <div class="page-header">
         <h2 style="margin-left: 100px">Latest Tweets:</h2>
     </div>
@@ -135,13 +153,15 @@ crossorigin="anonymous"></script>
                     echo "<tr>
                 <td>".$row->getId()."</td>
                 <td>".$row->getText(). "</td>
-                <td>".$row->getUserId()."</td>
+                <td><a href= 'showUser.php?id=".$row->getUserId()."'>".$row->getUserId()."</a></td>
                 <td>".$row->getCreationDate()."</td>
                 <td>No komments now</td>
 
                 </tr>"
                 ;}
-                ?>
+                
+               
+               ?>
             </tbody>
           </table>
     

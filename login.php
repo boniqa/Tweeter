@@ -37,6 +37,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 				<input type="submit" value="Login" />
 			</fieldset>
 		</form>
-		<a href="register.php">Registration</a>
+            <a href="NewUser.php">Registration</a>
 	</body>
 </html>

@@ -5,8 +5,43 @@ include 'src/User.php';
 include 'src/Tweet.php';
 include 'connection.php';
 
+if(isset($_SESSION['loggedUserId'])) {
+	header("Location: main.php");
+}
+
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	echo "post is working";
+    if(!isset($_POST['usr']) || !isset($_POST['email']) || !isset($_POST['pwd']) || !isset($_POST['pwd2'])){
+        
+        echo "error! error!";
+    }
+    else{
+      $username = ($_POST['usr']);
+      $email = trim($_POST['email']);
+      $password1= trim($_POST['pwd']);
+      $password2= trim($_POST['pwd2']);
+      
+      if($password1 != $password2){
+          
+          echo 'Error, two different passwords!';
+      }
+      else{
+          
+          $new_usr= new User;
+          $new_usr->setUsername($username);
+          $new_usr->setEmail($email);
+          $new_usr->setHashedPassword($password1);
+          $new_usr->saveToDb($conn);
+          $new_usr_id= $new_usr->getId();
+          var_dump($new_usr_id);
+          
+          $_SESSION['loggedUserId'] = $new_usr_id;
+          header("Location: main.php");
+          
+      }
+
+	//echo $username. "  ".$email. "  ".$password1." ". $password2 ;
+    }
+
 }
 
 

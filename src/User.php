@@ -14,11 +14,11 @@ CREATE TABLE Users (
 class User
 {
     	public static function login(mysqli $conn, $email, $password) {
-		$sql = "SELECT * FROM User WHERE email = '$email'";
+		$sql = "SELECT * FROM Users WHERE email = '$email'";
 		$result = $conn->query($sql);
-		if($result->num_rows == 1) {
+		if($result-> num_rows == 1) {
 			$rowUser = $result->fetch_assoc();
-			if(password_verify($password, $rowUser['hashedPassword'])) {
+			if(password_verify($password, $rowUser['hashed_password'])) {
 				return $rowUser['id'];
 			} else {
 				return false;
