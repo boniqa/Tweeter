@@ -1,34 +1,42 @@
 <?php
 session_start();
-
 include 'src/config.php';
 include 'src/User.php';
 include 'src/Tweet.php';
 include 'connection.php';
 
+
 if(!isset($_SESSION['loggedUserId'])) {
 	header("Location: login.php");
 }
 
- $user_id= $_SESSION['loggedUserId'];
-        $usr= new User();
-        $res= $usr->loadUserById($conn, $user_id);
         
-if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if(!isset($_GET['id'])) {
-       echo "Error!";
-       
-    }
-    else{
-        
-        $user_id= $_GET['id'];
+        $user_id= $_SESSION['loggedUserId'];
         $usr= new User();
-        $res= $usr->loadUserById($conn, $user_id);                          
-                 
-    }
-	
-}
+        $res= $usr->loadUserById($conn, $user_id);     
 
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if(isset($_POST['tweet'])){
+        
+      $tweet_text = ($_POST['tweet']);
+      $user_id= $_SESSION['loggedUserId'] ;
+      
+      $new_tweet= new Tweet();
+                
+        $new_tweet->setText($tweet_text);
+        $new_tweet->setUserId($user_id);
+        $new_tweet->setCreationDate(date("Y-m-d H:i:s"));
+        $new_tweet->saveToDb($conn);
+        
+       // echo"new tweet is set!";              
+             
+      //var_dump($user_id);
+      //var_dump($tweet_text);
+    }
+    
+}
+                 
+ 
 
 ?>
 
@@ -37,7 +45,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CodersLab - Warsztaty I </title>
+    <title>Twttr </title>
     <link href="style/style.css" rel="stylesheet">
     <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
@@ -68,11 +76,7 @@ crossorigin="anonymous"></script>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    <div class="jumbotron">
-                <h2 style="margin-left: 100px">Profile user: <?php echo $res->getUsername()?></h2>
-
-    </div>
-    
+    <div class="jumbotron"><h2 style="margin-left: 100px">Profile user: <?php echo $res->getUsername()?></h2></div>
     
     
     
@@ -104,6 +108,7 @@ crossorigin="anonymous"></script>
                 <td>".$row->getCreationDate()."</td>
                 <td>No komments now</td>
                 <td><a href= 'showPost.php?id=".$row->getId()."'>show post</td>
+                <td><a href= '#'>delete post</td>
                 <br>
 
                 </tr>"
@@ -114,5 +119,11 @@ crossorigin="anonymous"></script>
             </tbody>
           </table>
     
+    <div class="input-group">
+        <form method="POST" action="#">
+        <input type="text" maxlength="120"  name ="tweet" class="form-control" placeholder="Send message" aria-describedby="sizing-addon2">
+        <input type="submit" name="tweet_text" value="Add!"/>
+        </form>
+    </div>
 </body>
 </html>

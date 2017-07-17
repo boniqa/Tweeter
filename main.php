@@ -49,11 +49,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
      PRIMARY KEY(id)  
      );
 
-     */
-     /*
-      * 3 pliki: klasa user, main, config.php + klasa tweet, 
-      */
-    
+Create table Comments (
+     id int NOT NULL AUTO_INCREMENT,
+     user_id int NOT NULL,
+     post_id int NOT NULL,
+     creation_date datetime,
+     text varchar(255) NOT NULL,
+     PRIMARY KEY(id)  
+     );
+
     
     /*
       Create table Tweets (
@@ -103,7 +107,7 @@ crossorigin="anonymous"></script>
             <li class="active"><a href="#">Home</a></li>                
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">My profile</a></li>
+              <li><a href="my_profile.php">My profile</a></li>
             <li><a href="login.php">Sign in</a></li>
             <li><a href="logout.php">Sign out</a></li>
           </ul>
@@ -112,8 +116,7 @@ crossorigin="anonymous"></script>
     </nav>
     <div class="jumbotron">
     
-        <h1 style="margin-left: 100px">Tweeter</h1>
-        <p><a style="margin-left: 100px" class="btn btn-lg btn-success" href="NewUser.php" role="button">Sign up today</a></p>
+        <h1 style="margin-left: 100px">Tweeter</h1>      
 
     </div>
      <div class="page-header">
@@ -156,6 +159,7 @@ crossorigin="anonymous"></script>
                 <td><a href= 'showUser.php?id=".$row->getUserId()."'>".$row->getUserId()."</a></td>
                 <td>".$row->getCreationDate()."</td>
                 <td>No komments now</td>
+                <td><a href= 'showPost.php?id=".$row->getId()."'>show post</td>
 
                 </tr>"
                 ;}

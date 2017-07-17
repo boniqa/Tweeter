@@ -1,8 +1,8 @@
 <?php
 session_start();
-
 include 'src/config.php';
 include 'src/User.php';
+include 'src/Comment.php';
 include 'src/Tweet.php';
 include 'connection.php';
 
@@ -10,10 +10,27 @@ if(!isset($_SESSION['loggedUserId'])) {
 	header("Location: login.php");
 }
 
- $user_id= $_SESSION['loggedUserId'];
-        $usr= new User();
-        $res= $usr->loadUserById($conn, $user_id);
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if(isset($_POST['comment'])){
         
+      $comment_text = ($_POST['comment']);
+      //var_dump($comment_text);
+      $user_id= $_SESSION['loggedUserId'] ;
+      $tweet_id= $_GET['id'];
+      $new_comm= new Comment();
+               
+        $new_comm->setText($comment_text);
+        $new_comm->setPost_id($tweet_id);
+        $new_comm->setUserId($user_id);
+        $new_comm->setCreationDate(date("Y-m-d H:i:s"));
+        //var_dump($new_comm);
+        $new_comm->saveToDb($conn);
+                    
+       // header("Location: main.php");     
+      //var_dump($user_id);
+      //var_dump($tweet_text);
+    }
+}   
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
     if(!isset($_GET['id'])) {
        echo "Error!";
@@ -21,15 +38,22 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     else{
         
-        $user_id= $_GET['id'];
-        $usr= new User();
-        $res= $usr->loadUserById($conn, $user_id);                          
-                 
+        $tweet_id= $_GET['id'];
+        $tww= new Tweet();
+        $res= $tww->loadTweetById($conn, $tweet_id); 
+      //  var_dump($res);
+                
     }
+    
+    $user= $res->getUserId();
+    //var_dump($user); 
+ $usr= new User();
+ $tweet_user= $usr->loadUserById($conn, $user);
+ //var_dump($tweet_user);
 	
 }
-
-
+        
+ 
 ?>
 
 
@@ -69,7 +93,15 @@ crossorigin="anonymous"></script>
       </div>
     </nav>
     <div class="jumbotron">
-                <h2 style="margin-left: 100px">Profile user: <?php echo $res->getUsername()?></h2>
+        <h2 style="margin-left: 100px"> <?php 
+        
+        //echo $tweet_id= $_GET['id'];
+        //var_dump($tweet_id);
+        $tww= new Tweet();
+        $res= $tww->loadTweetById($conn, $tweet_id);
+        //var_dump($res);
+        echo "Post from user:".$res->getUserId();
+        ?></h2>
 
     </div>
     
@@ -77,42 +109,51 @@ crossorigin="anonymous"></script>
     
     
     
-    <div class="page-header">
-        <h2 style="margin-left: 100px">Users Tweets:</h2>
+    <div>
+        <h2 style="margin-left: 100px">" <?php echo $res->getText()?> "</h2>
     </div>
     
+      <div>
+          <h6 style="margin-left: 100px"><?php echo $res->getCreationDate()?></h2>
+    </div>
     
+    <div class="page-header">
+        <h2 style="margin-left: 100px">Comments:</h2>
+    </div>
     <table class="table table-striped">
             <thead>
               <tr>
                 <th>#</th>
                 <th>What?</th>
-                <th>When?</th>
-                <th>Comments</th>
-
+                <th>Who?</th>
+                <th>When?</th>               
               </tr>
             </thead>
             <tbody>
                 <?php
-                 $tweets= new Tweet();
-                $result= $tweets->loadTweetByUserId($conn, $user_id);
-             
+
+                $comments= new Comment();
+                $result= $comments->loadAllCommentsByPostId($conn, $tweet_id);                
+                
                 foreach ($result as $row){
                     echo "<tr>
                 <td>".$row->getId()."</td>
                 <td>".$row->getText(). "</td>
-                <td>".$row->getCreationDate()."</td>
-                <td>No komments now</td>
-                <td><a href= 'showPost.php?id=".$row->getId()."'>show post</td>
-                <br>
+                <td><a href= 'showUser.php?id=".$row->getUserId()."'>".$row->getUserId()."</a></td>
+                <td>".$row->getCreationDate()."</td>               
 
                 </tr>"
-                ;}  
+                ;}
                 
                
                ?>
             </tbody>
           </table>
-    
+    <div class="input-group">
+        <form method="POST" action="#">
+        <input type="text" maxlength="120"  name ="comment" class="form-control" placeholder="Send comment" aria-describedby="sizing-addon2">
+        <input type="submit" name="comment_text" value="Add!"/>
+        </form>
+    </div>
 </body>
 </html>
