@@ -3,6 +3,7 @@ session_start();
 
 include 'src/config.php';
 include 'src/User.php';
+include 'src/Comment.php';
 include 'src/Tweet.php';
 include 'connection.php';
 
@@ -72,8 +73,7 @@ crossorigin="anonymous"></script>
                 <h2 style="margin-left: 100px">Profile user: <?php echo $res->getUsername()?></h2>
 
     </div>
-    
-    
+        
     
     
     
@@ -98,11 +98,15 @@ crossorigin="anonymous"></script>
                 $result= $tweets->loadTweetByUserId($conn, $user_id);
              
                 foreach ($result as $row){
+                    
+                $comments= new Comment();
+                $res= $comments->loadAllCommentsByPostId($conn, $row->getId());
+                
                     echo "<tr>
                 <td>".$row->getId()."</td>
                 <td>".$row->getText(). "</td>
                 <td>".$row->getCreationDate()."</td>
-                <td>No komments now</td>
+                <td>". count($res)."</td>
                 <td><a href= 'showPost.php?id=".$row->getId()."'>show post</td>
                 <br>
 

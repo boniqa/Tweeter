@@ -2,6 +2,7 @@
 session_start();
 include 'src/config.php';
 include 'src/User.php';
+include 'src/Comment.php';
 include 'src/Tweet.php';
 include 'connection.php';
 
@@ -100,13 +101,21 @@ crossorigin="anonymous"></script>
                 <?php
                  $tweets= new Tweet();
                 $result= $tweets->loadTweetByUserId($conn, $user_id);
+                               
              
                 foreach ($result as $row){
+                    
+                $comments= new Comment();
+                $res= $comments->loadAllCommentsByPostId($conn, $row->getId());                
+                //var_dump($res);
+                //echo count($res);
+                
+                
                     echo "<tr>
                 <td>".$row->getId()."</td>
                 <td>".$row->getText(). "</td>
                 <td>".$row->getCreationDate()."</td>
-                <td>No komments now</td>
+                <td>". count($res)."</td>
                 <td><a href= 'showPost.php?id=".$row->getId()."'>show post</td>
                 <td><a href= '#'>delete post</td>
                 <br>

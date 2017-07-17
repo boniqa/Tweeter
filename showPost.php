@@ -134,7 +134,8 @@ crossorigin="anonymous"></script>
 
                 $comments= new Comment();
                 $result= $comments->loadAllCommentsByPostId($conn, $tweet_id);                
-                
+//                var_dump($result);
+//                echo count($result);
                 foreach ($result as $row){
                     echo "<tr>
                 <td>".$row->getId()."</td>
