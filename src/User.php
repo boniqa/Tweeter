@@ -9,6 +9,15 @@ CREATE TABLE Users (
     PRIMARY KEY(id),
     UNIQUE (email)
 );
+ * 
+ * 
+ CREATE TABLE Messages (
+    id int NOT NULL AUTO_INCREMENT,
+    author_id int(11) NOT NULL,
+    user_id int(11) NOT NULL,
+    text varchar(140) NOT NULL,
+    PRIMARY KEY(id)   
+);
  */
 
 class User

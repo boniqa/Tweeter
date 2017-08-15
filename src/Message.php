@@ -1,8 +1,9 @@
 <?php
 
-class Tweet
+class Message
 {
     private $id;
+    private $author_id;
     private $user_id;
     private $text;
     private $creation_date;
@@ -10,6 +11,7 @@ class Tweet
     public function __construct()
     {
         $this->id = -1;
+        $this->author_id= "";
         $this->user_id = "";
         $this->text = "";
         $this->creation_date = "";
@@ -21,22 +23,6 @@ class Tweet
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->user_id;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->user_id = $userId;
     }
 
     /**
@@ -71,14 +57,37 @@ class Tweet
         $this->creation_date = $creation_date;
     }
 
-    
-    
+    function getAuthor_id() {
+        return $this->author_id;
+    }
+
+    function getUser_id() {
+        return $this->user_id;
+    }
+
+    function getCreation_date() {
+        return $this->creation_date;
+    }
+
+    function setAuthor_id($author_id) {
+        $this->author_id = $author_id;
+    }
+
+    function setUser_id($user_id) {
+        $this->user_id = $user_id;
+    }
+
+    function setCreation_date($creation_date) {
+        $this->creation_date = $creation_date;
+    }
+
+        
     
     public function saveToDb(mysqli $conn)
     {
         if ($this->id == -1) {
-            $sql = "INSERT INTO Tweets(user_id, text, creation_date)
-          VALUES('{$this->user_id}', '{$this->text}', '{$this->creation_date}');";
+            $sql = "INSERT INTO Messages (author_id, user_id, text, creation_date)
+          VALUES('{$this->author_id}','{$this->user_id}', '{$this->text}', '{$this->creation_date}');";
             $result = $conn->query($sql);
             if ($result === TRUE) {
                 $this->id = $conn->insert_id;
@@ -87,7 +96,7 @@ class Tweet
                 return False;
             }
         } else {
-            $sql = "UPDATE Tweets SET user_id='{$this->user_id}',
+            $sql = "UPDATE Messages SET author_id='{$this->author_id}', user_id='{$this->user_id}',
           text='{$this->text}', creation_date='{$this->creation_date}'
           WHERE id={$this->id}";
             $result = $conn->query($sql);
@@ -98,43 +107,45 @@ class Tweet
         return False;
     }
 
-    static public function loadTweetById(mysqli $conn, $id)
+    static public function loadMessageById(mysqli $conn, $id)
     {
-        $sql = "SELECT * FROM Tweets WHERE id = $id";
+        $sql = "SELECT * FROM Messages WHERE id = $id";
 
         $result = $conn->query($sql);
 
         if ($result == true && $result->num_rows > 0) {
             $row = $result->fetch_object();
 
-            $loadedTweet = new Tweet();
-            $loadedTweet->id = $row->id;
-            $loadedTweet->user_id = $row->user_id;
-            $loadedTweet->text = $row->text;
-            $loadedTweet->creation_date = $row->creation_date;
+            $loadedMessage = new Message();
+            $loadedMessage->id = $row->id;
+            $loadedMessage->author_id = $row->author_id;
+            $loadedMessage->user_id = $row->user_id;
+            $loadedMessage->text = $row->text;
+            $loadedMessage->creation_date = $row->creation_date;
 
-            return $loadedTweet;
+            return $loadedMessage;
         }
 
         return null;
     }
     
-     static public function loadTweetByUserId(mysqli $conn, $user_id)
+     static public function loadMessagesByUserId(mysqli $conn, $user_id)
     {
-        $sql = "SELECT * FROM Tweets WHERE user_id = $user_id";
+        $sql = "SELECT * FROM Messages WHERE user_id = $user_id";
         $ret = [];
 
         $result = $conn->query($sql);
 
         if ($result == true && $result->num_rows > 0) {
             foreach ($result as $row) {
-                $loadedTweet = new Tweet();
-                $loadedTweet->id = $row['id'];
-                $loadedTweet->user_id = $row['user_id'];
-                $loadedTweet->text = $row['text'];
-                $loadedTweet->creation_date = $row['creation_date'];
+                $loadedMessage = new Message();
+                $loadedMessage->id = $row['id'];
+                $loadedMessage->author_id = $row['author_id'];
+                $loadedMessage->user_id = $row['user_id'];
+                $loadedMessage->text = $row['text'];
+                $loadedMessage->creation_date = $row['creation_date'];
 
-                $ret[] = $loadedTweet;
+                $ret[] = $loadedMessage;
             }
         }
 
@@ -142,26 +153,28 @@ class Tweet
 
     }
 
-    static public function loadAllTweets(mysqli $conn)
+     static public function loadMessagesByAuthorId(mysqli $conn, $author_id)
     {
-        $sql = "SELECT * FROM Tweets ORDER BY creation_date DESC";
+        $sql = "SELECT * FROM Messages WHERE author_id = $author_id";
         $ret = [];
 
         $result = $conn->query($sql);
 
         if ($result == true && $result->num_rows > 0) {
             foreach ($result as $row) {
-                $loadedTweet = new Tweet();
-                $loadedTweet->id = $row['id'];
-                $loadedTweet->user_id = $row['user_id'];
-                $loadedTweet->text = $row['text'];
-                $loadedTweet->creation_date = $row['creation_date'];
+                $loadedMessage = new Message();
+                $loadedMessage->id = $row['id'];
+                $loadedMessage->author_id = $row['author_id'];
+                $loadedMessage->user_id = $row['user_id'];
+                $loadedMessage->text = $row['text'];
+                $loadedMessage->creation_date = $row['creation_date'];
 
-                $ret[] = $loadedTweet;
+                $ret[] = $loadedMessage;
             }
         }
 
-        return $ret;
+        return $ret;           
+
     }
 
     public function delete(mysqli $conn)
@@ -181,20 +194,5 @@ class Tweet
 
         return true;
     }
-    
-    public function deleteById(mysqli $conn, $id)
-    {
-        $sql = "DELETE FROM Tweets WHERE id = $id";                
-            $result = $conn->query($sql);
-
-            if ($result == true) {
-                $this->id = -1;
-                return true;
-            }
-
-            return false;
-        
-
-        return true;
-    }
+       
 }

@@ -70,7 +70,7 @@ crossorigin="anonymous"></script>
               <li class="active"><a href="main.php">Home</a></li>                
           </ul>
           <ul class="nav navbar-nav navbar-right">
-              <li><a href="my_profile.php">My profile</a></li>
+              <li><a href="my_messages.php"> My messages</a></li>
             <li><a href="login.php">Sign in</a></li>
             <li><a href="logout.php">Sign out</a></li>
           </ul>
@@ -117,7 +117,7 @@ crossorigin="anonymous"></script>
                 <td>".$row->getCreationDate()."</td>
                 <td>". count($res)."</td>
                 <td><a href= 'showPost.php?id=".$row->getId()."'>show post</td>
-                <td><a href= '#'>delete post</td>
+                <td><a href= 'delete.php?id=".$row->getId()."'>delete post</td>
                 <br>
 
                 </tr>"
